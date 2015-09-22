@@ -4,15 +4,18 @@
 #include "sprites.h"
 #include "mapa.h"
 
+using namespace std;
 
 class Mario {
 	public:
-		int posX, posY;				
+		stack<int> pila_movimientos;
+		bool usando_pila;
+		int posX, posY;
 		
 		void Inicializar();
 		bool esInicializado();
 		void ColocarMario (int newY, int newX);
-		void DibujarMario (int frame);
+		void AnimarMario (int frame);
 		void MoverMario (int movimiento);
 
 };
@@ -20,6 +23,10 @@ class Mario {
 void Mario::Inicializar() {
 	posX = -1;
 	posY = -1;
+	while (not pila_movimientos.empty()) {
+		pila_movimientos.pop();
+	}
+	usando_pila = false;
 }
 
 bool Mario::esInicializado() {
@@ -32,6 +39,10 @@ void Mario::ColocarMario (int newY, int newX) {
 		rect.x = this->posX * IMAGENES_DIMENSION;
 		rect.y = this->posY * IMAGENES_DIMENSION;
 		SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
+		while (not pila_movimientos.empty()) {
+			pila_movimientos.pop();
+		}
+		usando_pila = false;
 	}
 	
 	rect.x = newX * IMAGENES_DIMENSION;
@@ -40,7 +51,7 @@ void Mario::ColocarMario (int newY, int newX) {
 	SDL_BlitSurface (images [IMG_MARIO_1], NULL, screen, &rect);
 }
 
-void Mario::DibujarMario (int frame) {
+void Mario::AnimarMario (int frame) {
 	SDL_Rect rect;
 	rect.x = this->posX * IMAGENES_DIMENSION;
 	rect.y = this->posY * IMAGENES_DIMENSION;
@@ -59,24 +70,28 @@ void Mario::MoverMario (int movimiento) {
 			this->posY--;
 			rect.x = this->posX * IMAGENES_DIMENSION;
 			rect.y = this->posY * IMAGENES_DIMENSION;
+			if (not usando_pila) pila_movimientos.push(ABAJO);
 			break;
 			
 		case ABAJO:
 			this->posY++;
 			rect.x = this->posX * IMAGENES_DIMENSION;
 			rect.y = this->posY * IMAGENES_DIMENSION;
+			if (not usando_pila) pila_movimientos.push(ARRIBA);
 			break;
 			
 		case IZQ:
 			this->posX--;
 			rect.x = this->posX * IMAGENES_DIMENSION;
 			rect.y = this->posY * IMAGENES_DIMENSION;
+			if (not usando_pila) pila_movimientos.push(DER);
 			break;
 			
 		case DER:
 			this->posX++;
 			rect.x = this->posX * IMAGENES_DIMENSION;
 			rect.y = this->posY * IMAGENES_DIMENSION;
+			if (not usando_pila) pila_movimientos.push(IZQ);
 			break;
 	}
 	

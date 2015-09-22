@@ -1,8 +1,10 @@
 #include <iostream>
+#include <stack>
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
+
 #include "time.h"
 
 #include "sprites.h"
@@ -11,7 +13,6 @@
 #include "mapa.h"
 #include "menu.h"
 
-using namespace std;
 
 /* Prototipos de función */
 void setup (void);
@@ -49,7 +50,7 @@ int main (int argc, char const* argv[])
 					break;
 				
 				case SDL_KEYDOWN:
-					if (estado_menu == PLAY) {
+					if (estado_menu == PLAY and not mario.usando_pila) {
 						switch (evento.key.keysym.sym) {
 							case SDLK_UP:
 								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
@@ -73,7 +74,13 @@ int main (int argc, char const* argv[])
 								if (mario.posX+1 < PANTALLA_ANCHO and mapa_virtual[mario.posY][mario.posX+1] == ESTADO_CAMINABLE) {
 									mario.MoverMario(DER);
 								}
-				                break; /* Cierre tecla der */				                
+				                break; /* Cierre tecla der */
+				                
+				            case SDLK_BACKSPACE:
+				            	if (not mario.pila_movimientos.empty()) {				            	
+									mario.usando_pila = true;
+				            	}
+				                break;				                
 						} /* Cierre del switch selector de tecla */
 					}
                     break; /* Cierre de SDL_Keydown */
@@ -127,7 +134,15 @@ int main (int argc, char const* argv[])
 					}					
 					break;
 			}
-		}		
+		}
+		
+		if (mario.usando_pila and (frame % 8) == 0 and estado_menu == PLAY) {
+			mario.MoverMario(mario.pila_movimientos.top());
+			mario.pila_movimientos.pop();
+			if (mario.pila_movimientos.empty()) {
+				mario.usando_pila = false;
+			}
+		}
 		
 		/* ANIMAR las cosas */
 		if (estado_menu == PLAY) {		
@@ -146,7 +161,7 @@ int main (int argc, char const* argv[])
 			}
 			
 			/* Animar Mario */
-			mario.DibujarMario(((frame % 8) / 4));
+			mario.AnimarMario(((frame % 8) / 4));
 		}
 		
 		frame++;

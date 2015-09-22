@@ -1,5 +1,5 @@
-#ifndef __Casa_H__
-#define __Casa_H__
+#ifndef __CASA_H__
+#define __CASA_H__
 
 #include "sprites.h"
 #include "mapa.h"
