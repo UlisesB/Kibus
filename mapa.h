@@ -10,8 +10,13 @@
 #define RANDOM_MAXIMO 4
 #define RANDOM_MINIMO 1
 
+#define MUS_MAPA_1 "mapa1.ogg"
+
 SDL_Surface *screen;
+
 Mix_Music *mus_fondo ;
+int use_sound;
+
 int mapa_virtual[PANTALLA_ALTO][PANTALLA_ANCHO];
 float porcentaje_obstaculos = RANDOM_MINIMO;
 

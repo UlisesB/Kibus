@@ -192,7 +192,7 @@ void setup (void) {
 		images[g] = carga;
 	}
 	
-	/*use_sound = 1;
+	use_sound = 1;
 	if (SDL_InitSubSystem (SDL_INIT_AUDIO) < 0) {
         fprintf (stderr, "Fallo al inicializar el audio, continuando...\n");
         use_sound = 0;
@@ -206,17 +206,6 @@ void setup (void) {
     }
 
     if (use_sound) {
-        for (g = 0; g < NUM_SOUNDS; g++) {
-            sounds [g] = Mix_LoadWAV (sound_names[g]);
-            
-            if (sounds [g] == NULL) {
-                fprintf (stderr, "Fallo al cargar %s\n", sound_names [g]);
-                SDL_Quit ();
-                exit (1);
-            }
-            Mix_VolumeChunk (sounds[g], MIX_MAX_VOLUME / 2);
-        }
-        
         mus_fondo = Mix_LoadMUS (MUS_MAPA_1);
         
         if (mus_fondo == NULL) {
@@ -224,5 +213,5 @@ void setup (void) {
             SDL_Quit ();
             exit (1);
         }
-    }*/
+    }
 }

@@ -14,7 +14,14 @@ enum {
 void CambiarEstadoMenu (int boton_menu) {
 	switch (boton_menu) {
 		case PLAY:
-			estado_menu = (estado_menu == PLAY) ? -1 : PLAY;
+			if (estado_menu == PLAY) {
+				if (use_sound) Mix_HaltMusic();
+				estado_menu = -1;
+			}
+			else {
+				if (use_sound) Mix_PlayMusic (mus_fondo, -1);
+				estado_menu = PLAY;
+			}
 			break;
 		case COLOCAR_MARIO:
 			if (estado_menu != PLAY)
