@@ -60,9 +60,9 @@ const char *images_names[NUM_IMGS] = {
 };
 
 enum {
-	ESTADO_CAMINABLE = 0x01,
-	ESTADO_ANIMADO = 0x02,
-	ESTADO_CASA = 0x03,
+	ESTADO_CAMINABLE,
+	ESTADO_ANIMADO,
+	ESTADO_CASA
 };
 
 SDL_Surface *images[NUM_IMGS];

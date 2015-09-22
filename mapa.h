@@ -11,8 +11,16 @@
 #define RANDOM_MINIMO 1
 
 SDL_Surface *screen;
+Mix_Music *mus_fondo ;
 int mapa_virtual[PANTALLA_ALTO][PANTALLA_ANCHO];
 float porcentaje_obstaculos = RANDOM_MINIMO;
+
+enum {
+	ARRIBA,
+	ABAJO,
+	IZQ,
+	DER
+};
 
 void DibujarFondo () {
 	SDL_Rect rect;
@@ -21,7 +29,7 @@ void DibujarFondo () {
 			rect.x = j * IMAGENES_DIMENSION;
 			rect.y = i * IMAGENES_DIMENSION;
 			SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
-			mapa_virtual[i][j] = 1;
+			mapa_virtual[i][j] = ESTADO_CAMINABLE;
 		}
 	}
 }
@@ -63,7 +71,7 @@ void DibujarObstaculos () {
 				rect.x = j * IMAGENES_DIMENSION;
 				rect.y = i * IMAGENES_DIMENSION;
 				SDL_BlitSurface (images [IMG_GRASS_1], NULL, screen, &rect);
-				mapa_virtual[i][j] = 2;
+				mapa_virtual[i][j] = ESTADO_ANIMADO;
 			}
 		}
 	}

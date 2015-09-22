@@ -7,6 +7,7 @@
 
 #include "sprites.h"
 #include "mario.h"
+#include "casa.h"
 #include "mapa.h"
 #include "menu.h"
 
@@ -24,6 +25,10 @@ int main (int argc, char const* argv[])
 	srand(time(NULL));
 	SDL_Event evento;
 	Mario mario;
+	Casa casa;
+	
+	mario.Inicializar();
+	casa.Inicializar();
     
 	setup();
 	DibujarFondo();
@@ -42,6 +47,37 @@ int main (int argc, char const* argv[])
 				case SDL_QUIT:
 					return 0;
 					break;
+				
+				case SDL_KEYDOWN:
+					if (estado_menu == PLAY) {
+						switch (evento.key.keysym.sym) {
+							case SDLK_UP:
+								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
+									mario.MoverMario(ARRIBA);
+								}
+								break; /* Cierre de tecla arriba */
+					
+							case SDLK_DOWN:
+								if (mario.posY+1 < PANTALLA_ALTO and mapa_virtual[mario.posY+1][mario.posX] == ESTADO_CAMINABLE) {
+									mario.MoverMario(ABAJO);
+								}
+								break; /* Cierre de tecla abajo */
+					
+							case SDLK_LEFT:
+								if (mario.posX-1 >= 0 and mapa_virtual[mario.posY][mario.posX-1] == ESTADO_CAMINABLE) {
+									mario.MoverMario(IZQ);
+								}
+								break; /* Cierre tecla izq */
+					
+							case SDLK_RIGHT:
+								if (mario.posX+1 < PANTALLA_ANCHO and mapa_virtual[mario.posY][mario.posX+1] == ESTADO_CAMINABLE) {
+									mario.MoverMario(DER);
+								}
+				                break; /* Cierre tecla der */				                
+						} /* Cierre del switch selector de tecla */
+					}
+                    break; /* Cierre de SDL_Keydown */
+				
 				case SDL_MOUSEBUTTONDOWN:
 					switch(evento.button.button) {
 						case SDL_BUTTON_WHEELUP:
@@ -50,28 +86,41 @@ int main (int argc, char const* argv[])
 								DibujarFondo ();
 								DibujarObstaculos();
 								mario.Inicializar();
+								casa.Inicializar();
 							}												
 							break;				
+						
 						case SDL_BUTTON_WHEELDOWN:					
 							if (porcentaje_obstaculos > RANDOM_MINIMO and estado_menu != PLAY) {
 								porcentaje_obstaculos = porcentaje_obstaculos - 0.4;
 								DibujarFondo ();
 								DibujarObstaculos();
 								mario.Inicializar();
+								casa.Inicializar();
 							}
 							break;
+						
 						case SDL_BUTTON_LEFT:
 							if (mouseX > PANTALLA_ANCHO * IMAGENES_DIMENSION + 2) {
 								g = mouseY / IMAGENES_DIMENSION;							
 								CambiarEstadoMenu (g);
 							}
 							else {
-								if (estado_menu == COLOCAR_MARIO) {
-									h = mouseY / IMAGENES_DIMENSION;
-									g = mouseX / IMAGENES_DIMENSION;
-									if (mapa_virtual[h][g] & ESTADO_CAMINABLE) {
-										mario.ColocarMario(h, g);
-									}
+								switch (estado_menu) {
+									case COLOCAR_MARIO:
+										h = mouseY / IMAGENES_DIMENSION;
+										g = mouseX / IMAGENES_DIMENSION;
+										if (mapa_virtual[h][g] == ESTADO_CAMINABLE) {
+											mario.ColocarMario(h, g);
+										}
+										break;
+									case COLOCAR_CASA:
+										h = mouseY / IMAGENES_DIMENSION;
+										g = mouseX / IMAGENES_DIMENSION;
+										if (mapa_virtual[h][g] == ESTADO_CAMINABLE) {
+											casa.ColocarCasa(h, g);
+										}
+										break;
 								}
 							}
 							break;
@@ -86,7 +135,7 @@ int main (int argc, char const* argv[])
 			subframe = frame / 8;
 			for (g = 0; g < PANTALLA_ALTO; g++) {
 				for (h = 0; h < PANTALLA_ANCHO; h++) {
-					if (mapa_virtual [g][h] & ESTADO_ANIMADO) {
+					if (mapa_virtual [g][h] == ESTADO_ANIMADO) {
 						rect.x = h * IMAGENES_DIMENSION;
 						rect.y = g * IMAGENES_DIMENSION;
 					

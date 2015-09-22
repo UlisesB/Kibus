@@ -3,7 +3,6 @@
 
 #include "mapa.h"
 
-
 int estado_menu;
 
 enum {
