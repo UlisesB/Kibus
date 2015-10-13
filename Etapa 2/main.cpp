@@ -52,7 +52,6 @@ int main (int argc, char const* argv[])
 				
 				case SDL_KEYDOWN:
 					if (estado_menu == PLAY and not mario.usando_pila and not mario.esInicializado()) {
-						std::cout << "asd\n" << std::endl;
 						switch (evento.key.keysym.sym) {
 							case SDLK_UP:
 								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
@@ -84,6 +83,29 @@ int main (int argc, char const* argv[])
 				            	}
 				                break;				                
 						} /* Cierre del switch selector de tecla */
+					}
+					if (estado_menu != PLAY) {
+						switch (evento.key.keysym.sym) {
+							case SDLK_0:
+								DibujarFondo ();
+								mario.Inicializar();
+								casa.Inicializar();
+								break;
+							case SDLK_1: case SDLK_2: case SDLK_3:
+								DibujarFondo ();
+								DibujarMapaPrecargado(evento.key.keysym.sym - 48);
+								mario.Inicializar();
+								casa.Inicializar();
+								break;
+							/*case SDLK_9:
+								for (int i = 0; i < PANTALLA_ALTO; i++) {
+									for (int j = 0; j < PANTALLA_ANCHO; j++) {
+										std::cout << mapa_virtual[i][j] << ", ";
+									}
+									std::cout << endl;
+								}
+								break;*/
+						}
 					}
                     break; /* Cierre de SDL_Keydown */
 				
@@ -161,7 +183,7 @@ int main (int argc, char const* argv[])
 					break;
 					
 				case SDL_MOUSEMOTION:
-					if (arrastrar_mouse) {					
+					if (arrastrar_mouse and mouseX < PANTALLA_ANCHO * IMAGENES_DIMENSION) {
 						switch (estado_menu) {
 							case COLOCAR_ARBOL:
 								h = mouseY / IMAGENES_DIMENSION;
