@@ -50,7 +50,8 @@ int main (int argc, char const* argv[])
 					break;
 				
 				case SDL_KEYDOWN:
-					if (estado_menu == PLAY and not mario.usando_pila) {
+					if (estado_menu == PLAY and not mario.usando_pila and not mario.esInicializado()) {
+						std::cout << "asd\n" << std::endl;
 						switch (evento.key.keysym.sym) {
 							case SDLK_UP:
 								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
@@ -127,6 +128,24 @@ int main (int argc, char const* argv[])
 										if (mapa_virtual[h][g] == ESTADO_CAMINABLE) {
 											casa.ColocarCasa(h, g);
 											mario.ColocarMario(h, g, casa);
+										}
+										break;
+									case COLOCAR_ARBOL:
+										h = mouseY / IMAGENES_DIMENSION;
+										g = mouseX / IMAGENES_DIMENSION;
+										if (mapa_virtual[h][g] == ESTADO_CAMINABLE and
+											(mario.posX != g or mario.posY != h) and
+											(casa.posX != g or casa.posY != h) ) {
+											ColocarArbol(h, g);
+										}
+										break;
+									case COLOCAR_ARENA:
+										h = mouseY / IMAGENES_DIMENSION;
+										g = mouseX / IMAGENES_DIMENSION;
+										if (mapa_virtual[h][g] == ESTADO_ANIMADO and
+											(mario.posX != g or mario.posY != h) and
+											(casa.posX != g or casa.posY != h) ) {
+											ColocarArena(h, g);
 										}
 										break;
 								}

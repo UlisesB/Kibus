@@ -39,31 +39,6 @@ void DibujarFondo () {
 	}
 }
 
-void DibujarMenu () {
-	SDL_Rect rect;
-	
-	rect.x = PANTALLA_ANCHO * IMAGENES_DIMENSION + 2;
-	rect.y = 0;
-	rect.h = PANTALLA_ALTO * IMAGENES_DIMENSION;
-	rect.w = IMAGENES_DIMENSION;
-	SDL_FillRect (screen, &rect, SDL_MapRGB(screen->format, 180, 223, 232));
-	
-	//Inicio
-	rect.x = PANTALLA_ANCHO * IMAGENES_DIMENSION + 2;
-	rect.y = (IMAGENES_DIMENSION * 0);
-	SDL_BlitSurface (images [IMG_START_1], NULL, screen, &rect);
-	
-	//Mario
-	rect.x = PANTALLA_ANCHO * IMAGENES_DIMENSION + 2;
-	rect.y = (IMAGENES_DIMENSION * 1);
-	SDL_BlitSurface (images [IMG_MARIO_1], NULL, screen, &rect);
-	
-	//Casa
-	rect.x = PANTALLA_ANCHO * IMAGENES_DIMENSION + 2;
-	rect.y = (IMAGENES_DIMENSION * 2);
-	SDL_BlitSurface (images [IMG_HOUSE_YELLOW], NULL, screen, &rect);
-}
-
 void DibujarObstaculos () {
 	SDL_Rect rect;
 	int tipo_mapa;
@@ -82,5 +57,22 @@ void DibujarObstaculos () {
 	}
 }
 
+void ColocarArbol (int posY, int posX) {
+	SDL_Rect rect;
+	
+	rect.x = posX * IMAGENES_DIMENSION;
+	rect.y = posY * IMAGENES_DIMENSION;
+	SDL_BlitSurface (images [IMG_GRASS_1], NULL, screen, &rect);
+	mapa_virtual[posY][posX] = ESTADO_ANIMADO;
+}
+
+void ColocarArena (int posY, int posX) {
+	SDL_Rect rect;
+	
+	rect.x = posX * IMAGENES_DIMENSION;
+	rect.y = posY * IMAGENES_DIMENSION;
+	SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
+	mapa_virtual[posY][posX] = ESTADO_CAMINABLE;
+}
 
 #endif /* __MAPA_H__ */
