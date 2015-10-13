@@ -22,6 +22,7 @@ int main (int argc, char const* argv[])
 {
 	SDL_Rect rect;
 	int g, h, frame, subframe;
+	bool arrastrar_mouse = false;
 	int mouseX, mouseY;
 	srand(time(NULL));
 	SDL_Event evento;
@@ -122,6 +123,7 @@ int main (int argc, char const* argv[])
 											mario.ColocarMario(h, g, casa);
 										}
 										break;
+										
 									case COLOCAR_CASA:
 										h = mouseY / IMAGENES_DIMENSION;
 										g = mouseX / IMAGENES_DIMENSION;
@@ -130,6 +132,7 @@ int main (int argc, char const* argv[])
 											mario.ColocarMario(h, g, casa);
 										}
 										break;
+										
 									case COLOCAR_ARBOL:
 										h = mouseY / IMAGENES_DIMENSION;
 										g = mouseX / IMAGENES_DIMENSION;
@@ -138,7 +141,9 @@ int main (int argc, char const* argv[])
 											(casa.posX != g or casa.posY != h) ) {
 											ColocarArbol(h, g);
 										}
+										arrastrar_mouse = true;
 										break;
+										
 									case COLOCAR_ARENA:
 										h = mouseY / IMAGENES_DIMENSION;
 										g = mouseX / IMAGENES_DIMENSION;
@@ -147,11 +152,43 @@ int main (int argc, char const* argv[])
 											(casa.posX != g or casa.posY != h) ) {
 											ColocarArena(h, g);
 										}
+										arrastrar_mouse = true;
 										break;
 								}
 							}
 							break;
 					}					
+					break;
+					
+				case SDL_MOUSEMOTION:
+					if (arrastrar_mouse) {					
+						switch (estado_menu) {
+							case COLOCAR_ARBOL:
+								h = mouseY / IMAGENES_DIMENSION;
+								g = mouseX / IMAGENES_DIMENSION;
+								if (mapa_virtual[h][g] == ESTADO_CAMINABLE and
+									(mario.posX != g or mario.posY != h) and
+									(casa.posX != g or casa.posY != h) ) {
+									ColocarArbol(h, g);
+								}
+								break;
+							case COLOCAR_ARENA:
+								h = mouseY / IMAGENES_DIMENSION;
+								g = mouseX / IMAGENES_DIMENSION;
+								if (mapa_virtual[h][g] == ESTADO_ANIMADO and
+									(mario.posX != g or mario.posY != h) and
+									(casa.posX != g or casa.posY != h) ) {
+									ColocarArena(h, g);
+								}
+								break;
+						}
+					}
+					break;
+					
+				case SDL_MOUSEBUTTONUP:
+					if (arrastrar_mouse) {
+						arrastrar_mouse = false;
+					}
 					break;
 			}
 		}
