@@ -1,7 +1,11 @@
 #ifndef __MAPA_H__
 #define __MAPA_H__
 
+#include <fstream>
+#include <string>
 #include "sprites.h"
+
+using namespace std;
 
 #define IMAGENES_DIMENSION 40
 
@@ -159,4 +163,60 @@ void ColocarArena (int posY, int posX) {
 	mapa_virtual[posY][posX] = ESTADO_CAMINABLE;
 }
 
+void GuardarMapa () {
+	fstream archivo;
+	string nombre_archivo;
+	
+	cout << "Cual es el nombre del archivo?: ";
+	getline (cin, nombre_archivo);
+	archivo.open(nombre_archivo + ".mapa", fstream::in | fstream::out | fstream::app);
+	for (int i = 0; i < PANTALLA_ALTO; i++) {
+		for (int j = 0; j < PANTALLA_ANCHO; j++) {
+			archivo << mapa_virtual[i][j];
+		}
+	}
+	cout << "Guardado...\n";
+	archivo.close();
+}
+
+void AbrirMapa () {
+	fstream archivo;
+	string nombre_archivo, mapa_archivo;
+	SDL_Rect rect;
+	int h = 0;
+	
+	cout << "Cual es el nombre del archivo?: ";
+	getline (cin, nombre_archivo);
+	archivo.open(nombre_archivo + ".mapa", fstream::in | fstream::out | fstream::app);
+	getline(archivo, mapa_archivo);
+	for (int i = 0; i < PANTALLA_ALTO; i++) {
+		for (int j = 0; j < PANTALLA_ANCHO; j++) {
+			rect.x = j * IMAGENES_DIMENSION;
+			rect.y = i * IMAGENES_DIMENSION;
+			if (mapa_archivo[h++] - '0' == ESTADO_ANIMADO) {
+				SDL_BlitSurface (images [IMG_GRASS_1], NULL, screen, &rect);
+				mapa_virtual[i][j] = ESTADO_ANIMADO; 
+			}
+		}
+	}
+	cout << "Abriendo...\n";
+	archivo.close();
+}
+
 #endif /* __MAPA_H__ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,7 @@
 #include <iostream>
 #include <stack>
+#include <fstream>
+
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -24,11 +26,13 @@ int main (int argc, char const* argv[])
 	int g, h, frame, subframe;
 	bool arrastrar_mouse = false;
 	int mouseX, mouseY;
-	srand(time(NULL));
 	SDL_Event evento;
 	Mario mario;
 	Casa casa;
+	string nombre_archivo;
+	fstream archivo;
 	
+	srand(time(NULL));
 	mario.Inicializar();
 	casa.Inicializar();
     
@@ -96,6 +100,15 @@ int main (int argc, char const* argv[])
 								DibujarMapaPrecargado(evento.key.keysym.sym - 48);
 								mario.Inicializar();
 								casa.Inicializar();
+								break;
+							case SDLK_g:
+								GuardarMapa();								
+								break;
+							case SDLK_a:
+								DibujarFondo ();
+								AbrirMapa();
+								mario.Inicializar();
+								casa.Inicializar();								
 								break;
 							/*case SDLK_9:
 								for (int i = 0; i < PANTALLA_ALTO; i++) {
