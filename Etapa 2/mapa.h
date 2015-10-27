@@ -22,6 +22,7 @@ Mix_Music *mus_fondo ;
 int use_sound;
 
 int mapa_virtual[PANTALLA_ALTO][PANTALLA_ANCHO];
+int mapa_banderines[PANTALLA_ALTO][PANTALLA_ANCHO];
 float porcentaje_obstaculos = RANDOM_MINIMO;
 
 enum {
@@ -93,6 +94,7 @@ void DibujarFondo () {
 			rect.y = i * IMAGENES_DIMENSION;
 			SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
 			mapa_virtual[i][j] = ESTADO_CAMINABLE;
+			mapa_banderines[i][j] = 0;
 		}
 	}
 }

@@ -14,7 +14,7 @@
 #include "casa.h"
 #include "mapa.h"
 #include "menu.h"
-
+#include "LineaBres.h"
 
 /* Prototipos de función */
 void setup (void);
@@ -25,7 +25,7 @@ int main (int argc, char const* argv[])
 	SDL_Rect rect;
 	int g, h, frame, subframe;
 	bool arrastrar_mouse = false;
-	int mouseX, mouseY;
+	int mouseX, mouseY, newX, newY;
 	SDL_Event evento;
 	Mario mario;
 	Casa casa;
@@ -55,39 +55,39 @@ int main (int argc, char const* argv[])
 					break;
 				
 				case SDL_KEYDOWN:
-					if (estado_menu == PLAY and not mario.usando_pila and not mario.esInicializado()) {
-						switch (evento.key.keysym.sym) {
-							case SDLK_UP:
-								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
-									mario.MoverMario(ARRIBA, casa);
-								}
-								break; /* Cierre de tecla arriba */
-					
-							case SDLK_DOWN:
-								if (mario.posY+1 < PANTALLA_ALTO and mapa_virtual[mario.posY+1][mario.posX] == ESTADO_CAMINABLE) {
-									mario.MoverMario(ABAJO, casa);
-								}
-								break; /* Cierre de tecla abajo */
-					
-							case SDLK_LEFT:
-								if (mario.posX-1 >= 0 and mapa_virtual[mario.posY][mario.posX-1] == ESTADO_CAMINABLE) {
-									mario.MoverMario(IZQ, casa);
-								}
-								break; /* Cierre tecla izq */
-					
-							case SDLK_RIGHT:
-								if (mario.posX+1 < PANTALLA_ANCHO and mapa_virtual[mario.posY][mario.posX+1] == ESTADO_CAMINABLE) {
-									mario.MoverMario(DER, casa);
-								}
-				                break; /* Cierre tecla der */
-				                
-				            case SDLK_BACKSPACE:
-				            	if (not mario.pila_movimientos.empty()) {				            	
-									mario.usando_pila = true;
-				            	}
-				                break;				                
-						} /* Cierre del switch selector de tecla */
-					}
+//					if (estado_menu == PLAY and not mario.usando_pila and not mario.esInicializado()) {
+//						switch (evento.key.keysym.sym) {
+//							case SDLK_UP:
+//								if (mario.posY-1 >= 0 and mapa_virtual[mario.posY-1][mario.posX] == ESTADO_CAMINABLE) {
+//									mario.MoverMario(ARRIBA, casa);
+//								}
+//								break; /* Cierre de tecla arriba */
+//					
+//							case SDLK_DOWN:
+//								if (mario.posY+1 < PANTALLA_ALTO and mapa_virtual[mario.posY+1][mario.posX] == ESTADO_CAMINABLE) {
+//									mario.MoverMario(ABAJO, casa);
+//								}
+//								break; /* Cierre de tecla abajo */
+//					
+//							case SDLK_LEFT:
+//								if (mario.posX-1 >= 0 and mapa_virtual[mario.posY][mario.posX-1] == ESTADO_CAMINABLE) {
+//									mario.MoverMario(IZQ, casa);
+//								}
+//								break; /* Cierre tecla izq */
+//					
+//							case SDLK_RIGHT:
+//								if (mario.posX+1 < PANTALLA_ANCHO and mapa_virtual[mario.posY][mario.posX+1] == ESTADO_CAMINABLE) {
+//									mario.MoverMario(DER, casa);
+//								}
+//				                break; /* Cierre tecla der */
+//				                
+//				            case SDLK_BACKSPACE:
+//				            	if (not mario.pila_movimientos.empty()) {				            	
+//									mario.usando_pila = true;
+//				            	}
+//				                break;				                
+//						} /* Cierre del switch selector de tecla */
+//					}
 					if (estado_menu != PLAY) {
 						switch (evento.key.keysym.sym) {
 							case SDLK_0:
@@ -110,14 +110,6 @@ int main (int argc, char const* argv[])
 								mario.Inicializar();
 								casa.Inicializar();								
 								break;
-							/*case SDLK_9:
-								for (int i = 0; i < PANTALLA_ALTO; i++) {
-									for (int j = 0; j < PANTALLA_ANCHO; j++) {
-										std::cout << mapa_virtual[i][j] << ", ";
-									}
-									std::cout << endl;
-								}
-								break;*/
 						}
 					}
                     break; /* Cierre de SDL_Keydown */
@@ -147,7 +139,7 @@ int main (int argc, char const* argv[])
 						case SDL_BUTTON_LEFT:
 							if (mouseX > PANTALLA_ANCHO * IMAGENES_DIMENSION + 2) {
 								g = mouseY / IMAGENES_DIMENSION;							
-								CambiarEstadoMenu (g);
+								CambiarEstadoMenu (g);								
 							}
 							else {
 								switch (estado_menu) {
@@ -228,14 +220,15 @@ int main (int argc, char const* argv[])
 			}
 		}
 		
-		if (mario.usando_pila and (frame % 8) == 0 and estado_menu == PLAY) {
-			mario.MoverMario(mario.pila_movimientos.top(), casa);
-			mario.pila_movimientos.pop();
-			if (mario.pila_movimientos.empty() or (mario.posX == casa.posX and mario.posY == casa.posY) ) {
-				while (not mario.pila_movimientos.empty()) {
-					mario.pila_movimientos.pop();
-				}
-				mario.usando_pila = false;
+		/* Movimiento con la lines de Bres. */
+		if ((frame % 2) == 0 and estado_menu == PLAY and not casa.esInicializado()) {
+			LineaBres(&mario, casa, &newX, &newY);
+			if (mapa_virtual[newY][newX] == ESTADO_CAMINABLE) {				
+				mario.MoverMario (casa, newX, newY);
+			}
+			else {				
+				mario.MovimientoAleatorio(&newX, &newY);
+				mario.MoverMario (casa, newX, newY);
 			}
 		}
 		
@@ -251,6 +244,30 @@ int main (int argc, char const* argv[])
 					
 						SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
 						SDL_BlitSurface (images [IMG_GRASS_1 + subframe], NULL, screen, &rect);
+					}
+					if (mapa_virtual [g][h] == ESTADO_BANDERIN_1) {
+						rect.x = h * IMAGENES_DIMENSION;
+						rect.y = g * IMAGENES_DIMENSION;
+					
+						SDL_BlitSurface (images [IMG_COURSE_1_1 + frame/16], NULL, screen, &rect);
+					}
+					if (mapa_virtual [g][h] == ESTADO_BANDERIN_2) {
+						rect.x = h * IMAGENES_DIMENSION;
+						rect.y = g * IMAGENES_DIMENSION;
+					
+						SDL_BlitSurface (images [IMG_COURSE_2_1 + frame/16], NULL, screen, &rect);
+					}
+					if (mapa_virtual [g][h] == ESTADO_BANDERIN_3) {
+						rect.x = h * IMAGENES_DIMENSION;
+						rect.y = g * IMAGENES_DIMENSION;
+					
+						SDL_BlitSurface (images [IMG_COURSE_3_1 + frame/16], NULL, screen, &rect);
+					}
+					if (mapa_virtual [g][h] == ESTADO_BANDERIN_4) {
+						rect.x = h * IMAGENES_DIMENSION;
+						rect.y = g * IMAGENES_DIMENSION;
+					
+						SDL_BlitSurface (images [IMG_COURSE_4_1 + frame/16], NULL, screen, &rect);
 					}
 				}
 			}
