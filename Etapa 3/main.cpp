@@ -25,7 +25,7 @@ int main (int argc, char const* argv[])
 	SDL_Rect rect;
 	int g, h, frame, subframe;
 	bool arrastrar_mouse = false;
-	int mouseX, mouseY, newX, newY;
+	int mouseX, mouseY;
 	SDL_Event evento;
 	Mario mario;
 	Casa casa;
@@ -220,15 +220,15 @@ int main (int argc, char const* argv[])
 			}
 		}
 		
-		/* Movimiento con la lines de Bres. */
-		if ((frame % 2) == 0 and estado_menu == PLAY and not casa.esInicializado()) {
-			LineaBres(&mario, casa, &newX, &newY);
-			if (mapa_virtual[newY][newX] == ESTADO_CAMINABLE) {				
-				mario.MoverMario (casa, newX, newY);
+		/* Movimiento de yoshis */
+		if ((frame % 1) == 0 and estado_menu == PLAY and not mario.esInicializado() and 
+			not (mario.posX == casa.posX and mario.posY == casa.posY)) {
+			if (mario.adminYoshis.etapa < ETAPAS) {
+				mario.adminYoshis.MoverYoshis();
+				//getchar();
 			}
-			else {				
-				mario.MovimientoAleatorio(&newX, &newY);
-				mario.MoverMario (casa, newX, newY);
+			else {
+				mario.MoverMario();
 			}
 		}
 		
@@ -245,32 +245,10 @@ int main (int argc, char const* argv[])
 						SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
 						SDL_BlitSurface (images [IMG_GRASS_1 + subframe], NULL, screen, &rect);
 					}
-					if (mapa_virtual [g][h] == ESTADO_BANDERIN_1) {
-						rect.x = h * IMAGENES_DIMENSION;
-						rect.y = g * IMAGENES_DIMENSION;
-					
-						SDL_BlitSurface (images [IMG_COURSE_1_1 + frame/16], NULL, screen, &rect);
-					}
-					if (mapa_virtual [g][h] == ESTADO_BANDERIN_2) {
-						rect.x = h * IMAGENES_DIMENSION;
-						rect.y = g * IMAGENES_DIMENSION;
-					
-						SDL_BlitSurface (images [IMG_COURSE_2_1 + frame/16], NULL, screen, &rect);
-					}
-					if (mapa_virtual [g][h] == ESTADO_BANDERIN_3) {
-						rect.x = h * IMAGENES_DIMENSION;
-						rect.y = g * IMAGENES_DIMENSION;
-					
-						SDL_BlitSurface (images [IMG_COURSE_3_1 + frame/16], NULL, screen, &rect);
-					}
-					if (mapa_virtual [g][h] == ESTADO_BANDERIN_4) {
-						rect.x = h * IMAGENES_DIMENSION;
-						rect.y = g * IMAGENES_DIMENSION;
-					
-						SDL_BlitSurface (images [IMG_COURSE_4_1 + frame/16], NULL, screen, &rect);
-					}
 				}
 			}
+			
+			casa.DibujarCasa();
 			
 			/* Animar Mario */
 			mario.AnimarMario(((frame % 8) / 4));

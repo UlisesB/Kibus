@@ -13,6 +13,7 @@ using namespace std;
 #define PANTALLA_ALTO 15
 #define RANDOM_MAXIMO 4
 #define RANDOM_MINIMO 1
+#define ETAPAS 5
 
 #define MUS_MAPA_1 "mapa1.ogg"
 
@@ -22,8 +23,13 @@ Mix_Music *mus_fondo ;
 int use_sound;
 
 int mapa_virtual[PANTALLA_ALTO][PANTALLA_ANCHO];
-int mapa_banderines[PANTALLA_ALTO][PANTALLA_ANCHO];
+int mapa_calor[PANTALLA_ALTO][PANTALLA_ANCHO];
 float porcentaje_obstaculos = RANDOM_MINIMO;
+
+typedef struct {
+	int posX, posY;
+	int calor;
+} RegistroMovimiento;
 
 enum {
 	ARRIBA,
@@ -94,7 +100,6 @@ void DibujarFondo () {
 			rect.y = i * IMAGENES_DIMENSION;
 			SDL_BlitSurface (images [IMG_SAND_1], NULL, screen, &rect);
 			mapa_virtual[i][j] = ESTADO_CAMINABLE;
-			mapa_banderines[i][j] = 0;
 		}
 	}
 }

@@ -16,17 +16,7 @@ enum {
 	
 	IMG_START_1,
 	
-	IMG_COURSE_1_1,
-	IMG_COURSE_1_2,
-	
-	IMG_COURSE_2_1,
-	IMG_COURSE_2_2,
-	
-	IMG_COURSE_3_1,
-	IMG_COURSE_3_2,
-	
-	IMG_COURSE_4_1,
-	IMG_COURSE_4_2,
+	IMG_YOSHI,
 	
 	NUM_IMGS
 };
@@ -46,17 +36,7 @@ const char *images_names[NUM_IMGS] = {
 	
 	"start.gif",
 	
-	"course1-1.gif",
-	"course1-2.gif",
-	
-	"course2-1.gif",
-	"course2-2.gif",
-	
-	"course3-1.gif",
-	"course3-2.gif",
-	
-	"course4-1.gif",
-	"course4-2.gif"
+	"yoshi.gif"
 };
 
 enum {
