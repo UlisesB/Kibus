@@ -221,7 +221,7 @@ int main (int argc, char const* argv[])
 		}
 		
 		/* Movimiento de yoshis */
-		if ((frame % 1) == 0 and estado_menu == PLAY and not mario.esInicializado() and 
+		if ((frame % 16) == 0 and estado_menu == PLAY and not mario.esInicializado() and 
 			not (mario.posX == casa.posX and mario.posY == casa.posY)) {
 			if (mario.adminYoshis.etapa < ETAPAS) {
 				mario.adminYoshis.MoverYoshis();
